@@ -25,13 +25,22 @@ let persons = [
       number: "040-1098232",
    },
 ]
-
+// 3.1
 app.get('/', (request, response) => {
    response.send('<h1>Phone Book by Anton</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
    response.json(persons);
+})
+
+//3.2
+app.get('/api/info', (request, response) => {
+   const currentTime = new Date();
+   const personQty = persons.length;
+   const message = `<p>${currentTime}</p>\n<p>Phonebook has info for ${personQty} people</p>`;
+
+   response.send(message)
 })
 
 const PORT = 3001;
