@@ -1,6 +1,21 @@
 const express = require('express'); // Importing express framework
+const morgan = require('morgan'); // Importing morgan module
 const app = express(); // Creating instance of Express object
+//Middlewares
+
 app.use(express.json()); // Using of json-parser middleware
+app.use(morgan('tiny'));// Using of morgan middleware, tiny-format
+
+const requestLogger = (request,response,next) => {
+   console.log('Method', request.method);
+   console.log('Path', request.path);
+   console.log('Body', request.body);
+   console.log('---');
+   console.log("Middleware requestLogger")
+   next();
+}
+
+app.use(requestLogger); //Using of requestLogger Middleware
 
 const genereteId = () => {
    let MaxId = persons.length > 0
@@ -72,6 +87,8 @@ app.post('/api/persons', (request, response) => {
       response.json(person)
    }
 })
+
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
