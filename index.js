@@ -2,29 +2,21 @@ const express = require('express'); // Importing express framework
 const app = express(); // Creating instance of Express object
 app.use(express.json()); // Using of json-parser middleware
 
+const genereteId = () => {
+   let MaxId = persons.length > 0
+      ? Math.max(...persons.map(p => p.id))
+      : 0;
+   return MaxId + 1;
+}
+
 // Array of Persons
 let persons = [
-   {
-      id: 1,
-      name: "Arto Hellas",
-      number: "040-123456",
-   },
-   {
-      id: 2,
-      name: "Ada Lovelace",
-      number: "39-44-543232",
-   },
-   {
-      id: 3,
-      name: "Dan Abramov",
-      number: "12-43-765432",
-   },
-   {
-      id: 4,
-      name: "Mary Poppendick",
-      number: "040-1098232",
-   },
-]
+   { id: 1, name: 'Arto Hellas', number: '040-123456' },
+   { id: 2, name: 'Ada Lovelace', number: '39-44-543232' },
+   { id: 3, name: 'Dan Abramov', number: '12-43-765432' },
+   { id: 4, name: 'Mary Poppendick', number: '040-1098232' },
+];
+
 // 3.1
 app.get('/', (request, response) => {
    response.send('<h1>Phone Book by Anton</h1>')
@@ -59,6 +51,24 @@ app.delete('/api/persons/:id', (request, response) => {
    const id = Number(request.params.id);
    persons = persons.filter(person => person.id !== id);
    response.status(204).end()
+})
+
+//3.5
+app.post('/api/persons', (request, response) => {
+   const body = request.body;
+   console.log(body)
+   if (!body.name) {
+      return response.status(400).json({error: 'Content missing'});
+   }
+
+   const person = {
+      id: genereteId(),
+      name: body.name,
+      number: body.number,
+   }
+
+   persons = persons.concat(person);
+   response.json(person)
 })
 
 const PORT = 3001;
