@@ -12,9 +12,6 @@ const genereteId = () => {
 // Array of Persons
 let persons = [
    { id: 1, name: 'Arto Hellas', number: '040-123456' },
-   { id: 2, name: 'Ada Lovelace', number: '39-44-543232' },
-   { id: 3, name: 'Dan Abramov', number: '12-43-765432' },
-   { id: 4, name: 'Mary Poppendick', number: '040-1098232' },
 ];
 
 // 3.1
@@ -35,7 +32,7 @@ app.get('/api/info', (request, response) => {
    response.send(message)
 })
 
-3.3
+//3.3
 app.get('/api/persons/:id', (request, response) => {
    const id = Number(request.params.id);
    const person = persons.find(person => person.id === id);
@@ -56,19 +53,24 @@ app.delete('/api/persons/:id', (request, response) => {
 //3.5
 app.post('/api/persons', (request, response) => {
    const body = request.body;
-   console.log(body)
-   if (!body.name) {
+   if (!body.name || !body.number) {
       return response.status(400).json({error: 'Content missing'});
-   }
+   } 
 
-   const person = {
+   const nameExists = persons.some(p => p.name === body.name);
+
+      if (nameExists) {
+         return response.status(400).json({error: "name must be unique"});
+      } else {
+      const person = {
       id: genereteId(),
       name: body.name,
       number: body.number,
-   }
+      }
 
-   persons = persons.concat(person);
-   response.json(person)
+      persons = persons.concat(person);
+      response.json(person)
+   }
 })
 
 const PORT = 3001;
