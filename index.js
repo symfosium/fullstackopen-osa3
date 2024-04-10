@@ -4,7 +4,16 @@ const app = express(); // Creating instance of Express object
 //Middlewares
 
 app.use(express.json()); // Using of json-parser middleware
-app.use(morgan('tiny'));// Using of morgan middleware, tiny-format
+app.use(morgan((tokens, req, res) => {
+   return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+      JSON.stringify(req.body)
+    ].join(' ')
+}));// Using of morgan middleware, tiny-format
 
 const requestLogger = (request,response,next) => {
    console.log('Method', request.method);
